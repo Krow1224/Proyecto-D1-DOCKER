@@ -1,0 +1,18 @@
+# Local environment: copy .env.example to .env and edit it there.
+# The example is committed; the real file never is.
+.env
+
+# Python build artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Datos persistentes de Docker / PostgreSQL / Redis
+*.db
+*.sqlite3
+pgdata/
+redisdata/
+
+# IDEs
+.vscode/
+.idea/
