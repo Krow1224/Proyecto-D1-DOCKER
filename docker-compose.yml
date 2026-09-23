@@ -423,6 +423,32 @@ services:
           cpus: "2.0"
           memory: 4G
 
+  central-worker:
+    build: ./central-api
+    container_name: central-worker
+    command: python worker.py
+    volumes:
+      - ./central-api:/app
+    environment:
+      # Necesita la misma variable de BD que la API para poder insertar los datos
+      CENTRAL_DATABASE_URL: mysql+pymysql://${CENTRAL_MYSQL_USER:-central}:${CENTRAL_MYSQL_PASSWORD:-central_password}@central-mysql:3306/${CENTRAL_MYSQL_DATABASE:-central}
+    depends_on:
+      central-mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+    networks:
+      - central-net
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - central-net
+
   central-api:
     build: ./central-api
     container_name: central-api
@@ -434,6 +460,8 @@ services:
     depends_on:
       central-mysql:
         condition: service_healthy
+      rabbitmq:
+        condition: service_started
     networks:
       # Head office's LAN, plus the simulated internet so the stores' forwarders
       # can reach it. It is the ONLY way into the central site from outside.
