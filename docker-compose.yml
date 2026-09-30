@@ -424,9 +424,11 @@ services:
           memory: 4G
 
   central-worker:
-    build: ./central-api
+    build: 
+      context: ./central-api
+      dockerfile: Dockerfile.worker
     container_name: central-worker
-    command: python worker.py
+    command: python worker.py #se necesita o no? porque ya esta especificada dentro del dockerfile
     volumes:
       - ./central-api:/app
     environment:
