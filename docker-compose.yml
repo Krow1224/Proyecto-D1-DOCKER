@@ -425,12 +425,10 @@ services:
 
   central-worker:
     build: 
-      context: ./central-api
-      dockerfile: Dockerfile.worker
+      context: ./central-worker
+      dockerfile: Dockerfile
     container_name: central-worker
     command: python worker.py #se necesita o no? porque ya esta especificada dentro del dockerfile
-    volumes:
-      - ./central-api:/app
     environment:
       # Necesita la misma variable de BD que la API para poder insertar los datos
       CENTRAL_DATABASE_URL: mysql+pymysql://${CENTRAL_MYSQL_USER:-central}:${CENTRAL_MYSQL_PASSWORD:-central_password}@central-mysql:3306/${CENTRAL_MYSQL_DATABASE:-central}
